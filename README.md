@@ -1,6 +1,8 @@
 # Composer Visual Manager
 
 ![.NET](https://img.shields.io/static/v1?style=for-the-badge&message=.NET&color=512BD4&logo=dotnet&logoColor=FFFFFF&label=)
+![COMPOSER](https://img.shields.io/static/v1?style=for-the-badge&message=Composer&color=885630&logo=composer&logoColor=FFFFFF&label=)
+![PHP](https://img.shields.io/static/v1?style=for-the-badge&message=PHP&color=777BB4&logo=php&logoColor=FFFFFF&label=)
 
 
 ## 📝 Description

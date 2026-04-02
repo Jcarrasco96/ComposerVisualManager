@@ -8,11 +8,7 @@ Public Class ItemComposer
     Public ConstraintVersion As String
     Public IsDev As Boolean = False
 
-    Private http As New HttpRequest
-    Private httpResponse As HttpRequest.HttpResponseData
-    Private headers As New Dictionary(Of String, String) From {
-        {"Content-Type", "application/json"}
-    }
+
 
     Private StatusColor As Color = Color.LightGray
 
@@ -37,7 +33,6 @@ Public Class ItemComposer
     End Sub
 
     Private Async Sub RefreshData()
-        'lblPackage.Text = "LOADING..."
         lblLatest.Text = "LOADING..."
         lblUpdated.Text = "LOADING..."
         lblLastUpdated.Text = "LOADING..."
@@ -50,7 +45,7 @@ Public Class ItemComposer
             lblRequire.Text = "app"
         End If
 
-        Dim pd = Await GetCurrentStatusAsync()
+        Dim pd = Await PackageData.GetInfo(Package)
 
         Dim pFirst = pd.Packages.First
 
@@ -60,47 +55,14 @@ Public Class ItemComposer
         Dim latest = versions.First()
 
         lblLatest.Text = latest.VersionNormalized
-
-        Dim updateType = latest.GetUpdateType(InstalledVersion)
-
-        lblUpdated.Text = updateType
-
+        lblUpdated.Text = latest.GetUpdateType(InstalledVersion)
+        'lblUpdated.Text = latest.GetRealUpdateType(InstalledVersion, ConstraintVersion)
         lblLastUpdated.Text = latest.LastUpdated
 
-        Select Case updateType
-            Case "MAJOR"
-                StatusColor = Color.FromArgb(248, 215, 218) ' danger
-                Exit Select
-
-            Case "UP-TO-DATE"
-                StatusColor = Color.FromArgb(209, 231, 221) ' success
-                Exit Select
-
-            Case "UNKNOWN"
-                StatusColor = Color.FromArgb(207, 244, 252) ' info
-                Exit Select
-
-            Case "MINOR"
-                StatusColor = Color.FromArgb(226, 227, 229) ' secondary
-                Exit Select
-
-            Case "PATCH"
-                StatusColor = Color.FromArgb(255, 243, 205) ' warning
-                Exit Select
-
-            Case Else
-                StatusColor = Color.LightGray
-
-        End Select
+        StatusColor = latest.Color(InstalledVersion)
 
         lblUpdated.BackColor = StatusColor
     End Sub
-
-    Private Async Function GetCurrentStatusAsync() As Task(Of PackageData)
-        httpResponse = Await http.MakeRequest2($"https://repo.packagist.org/p2/{Package}.json", headers:=headers)
-
-        Return JsonConvert.DeserializeObject(Of PackageData)(httpResponse.GetBodyAsString)
-    End Function
 
     Private Sub BtnRefresh_Click(sender As Object, e As EventArgs) Handles btnRefresh.Click
         RefreshData()
@@ -111,7 +73,7 @@ Public Class ItemComposer
     End Sub
 
     Private Sub BtnDelete_Click(sender As Object, e As EventArgs) Handles btnDelete.Click
-        Dim result = MsgBox("Esta seguro que desea eliminar la extension """ & Package & """?", MsgBoxStyle.YesNo + MsgBoxStyle.Question)
+        Dim result = MsgBox("Are you sure you want to remove the extension `" & Package & "`?", MsgBoxStyle.YesNo + MsgBoxStyle.Question)
 
         If result = MsgBoxResult.Yes Then
             RaiseEvent DeleteRequested(Me)

@@ -24,10 +24,11 @@ Partial Class FormMain
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormMain))
         panelItems = New Panel()
-        btnOpenProject = New Button()
         btnSearch = New Button()
         StatusStrip1 = New StatusStrip()
         tssStatus = New ToolStripStatusLabel()
+        btnUpdateAll = New Button()
+        btnRefresh = New Button()
         StatusStrip1.SuspendLayout()
         SuspendLayout()
         ' 
@@ -41,17 +42,6 @@ Partial Class FormMain
         panelItems.Name = "panelItems"
         panelItems.Size = New Size(1260, 535)
         panelItems.TabIndex = 0
-        ' 
-        ' btnOpenProject
-        ' 
-        btnOpenProject.Location = New Point(11, 12)
-        btnOpenProject.Margin = New Padding(2, 3, 2, 3)
-        btnOpenProject.Name = "btnOpenProject"
-        btnOpenProject.Size = New Size(171, 55)
-        btnOpenProject.TabIndex = 2
-        btnOpenProject.Text = "Open Project"
-        btnOpenProject.UseVisualStyleBackColor = True
-        btnOpenProject.Visible = False
         ' 
         ' btnSearch
         ' 
@@ -80,15 +70,38 @@ Partial Class FormMain
         tssStatus.Size = New Size(125, 20)
         tssStatus.Text = "No path selected."
         ' 
+        ' btnUpdateAll
+        ' 
+        btnUpdateAll.Anchor = AnchorStyles.Top Or AnchorStyles.Right
+        btnUpdateAll.Location = New Point(982, 12)
+        btnUpdateAll.Margin = New Padding(2, 3, 2, 3)
+        btnUpdateAll.Name = "btnUpdateAll"
+        btnUpdateAll.Size = New Size(171, 55)
+        btnUpdateAll.TabIndex = 5
+        btnUpdateAll.Text = "Update all"
+        btnUpdateAll.UseVisualStyleBackColor = True
+        ' 
+        ' btnRefresh
+        ' 
+        btnRefresh.Anchor = AnchorStyles.Top Or AnchorStyles.Right
+        btnRefresh.Image = My.Resources.Resources.repeat
+        btnRefresh.Location = New Point(1157, 12)
+        btnRefresh.Margin = New Padding(2, 3, 2, 3)
+        btnRefresh.Name = "btnRefresh"
+        btnRefresh.Size = New Size(55, 55)
+        btnRefresh.TabIndex = 6
+        btnRefresh.UseVisualStyleBackColor = True
+        ' 
         ' FormMain
         ' 
         AllowDrop = True
         AutoScaleDimensions = New SizeF(8F, 20F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(1282, 633)
+        Controls.Add(btnRefresh)
+        Controls.Add(btnUpdateAll)
         Controls.Add(StatusStrip1)
         Controls.Add(btnSearch)
-        Controls.Add(btnOpenProject)
         Controls.Add(panelItems)
         Icon = CType(resources.GetObject("$this.Icon"), Icon)
         Margin = New Padding(3, 4, 3, 4)
@@ -103,9 +116,10 @@ Partial Class FormMain
     End Sub
 
     Friend WithEvents panelItems As Panel
-    Friend WithEvents btnOpenProject As Button
     Friend WithEvents btnSearch As Button
     Friend WithEvents StatusStrip1 As StatusStrip
     Friend WithEvents tssStatus As ToolStripStatusLabel
+    Friend WithEvents btnUpdateAll As Button
+    Friend WithEvents btnRefresh As Button
 
 End Class

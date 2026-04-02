@@ -171,4 +171,19 @@ Public Class FormMain
         LoadComposerJson()
     End Sub
 
+    Private Sub btnUpdateAll_Click(sender As Object, e As EventArgs) Handles btnUpdateAll.Click
+        Dim d As New DialogProgressComposer With {
+            .Path = Path,
+            .Command = "update"
+        }
+
+        d.ShowDialog()
+
+        LoadComposerJson()
+    End Sub
+
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles btnRefresh.Click
+        LoadComposerJson()
+    End Sub
+
 End Class

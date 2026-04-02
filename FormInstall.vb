@@ -1,5 +1,4 @@
-﻿Imports System.IO
-Imports System.Net.Http
+﻿Imports System.Net.Http
 Imports Newtonsoft.Json
 
 Public Class FormInstall
