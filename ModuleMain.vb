@@ -1,5 +1,4 @@
 ﻿Imports System.IO
-Imports System.Reflection.Emit
 Imports Newtonsoft.Json
 
 Module ModuleMain
@@ -26,32 +25,6 @@ Module ModuleMain
         End If
 
         Return lockData
-    End Function
-
-    Public Function IsInstalled(fileLock As String, packageName As String) As Boolean
-        Dim LockData As ComposerLock = GetLockData(fileLock)
-
-        If LockData Is Nothing Then
-            Return False
-        End If
-
-        Return LockData.Packages.Any(Function(p) p.Name = packageName)
-    End Function
-
-    Public Function GetInstalledPackages(fileLock As String) As Dictionary(Of String, String)
-        Dim result As New Dictionary(Of String, String)
-
-        Dim LockData As ComposerLock = GetLockData(fileLock)
-
-        If LockData Is Nothing Then
-            Return result
-        End If
-
-        For Each pkg As LockPackage In LockData.Packages
-            result(pkg.Name) = pkg.Version
-        Next
-
-        Return result
     End Function
 
     Public Function GetInstalledVersion(fileLock As String, packageName As String) As String

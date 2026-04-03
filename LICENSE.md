@@ -1,5 +1,3 @@
-![GNU Affero General Public License](https://www.gnu.org/graphics/agplv3-with-text-100x42.png)
-
                     GNU AFFERO GENERAL PUBLIC LICENSE
                        Version 3, 19 November 2007
 
