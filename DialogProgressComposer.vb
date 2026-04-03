@@ -51,9 +51,18 @@
     End Sub
 
     Private Sub WriteOutput(sender As Object, e As DataReceivedEventArgs)
-        If Not String.IsNullOrEmpty(e.Data) Then
-            AppendTextSafe(e.Data)
+        If String.IsNullOrEmpty(e.Data) Then
+            Return
         End If
+
+        If e.Data.Contains("packages you are using are looking for funding") Then
+            Exit Sub
+        End If
+        If e.Data.Contains("composer fund") Then
+            Exit Sub
+        End If
+
+        AppendTextSafe(e.Data)
     End Sub
 
 End Class

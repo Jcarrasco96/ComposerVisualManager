@@ -3,13 +3,9 @@ Imports Newtonsoft.Json.Linq
 
 Public Class FormMain
 
-    Private Path As String
+    ' TODO composer config allow-plugins.* true
 
-    'Private LockData As ComposerLock = Nothing
-
-    'Private Sub BtnOpenProject_Click(sender As Object, e As EventArgs) Handles btnOpenProject.Click
-    '    LoadComposerJson()
-    'End Sub
+    Private Path As String ' = "D:\Programming\WEB\micro-framework"
 
     Private Sub LoadComposerJson()
         If Not File.Exists($"{Path}\composer.json") Then
@@ -26,12 +22,7 @@ Public Class FormMain
                 Exit Sub
             End If
 
-            Dim d As New DialogProgressComposer With {
-                .Path = Path,
-                .Command = "update"
-            }
-
-            d.ShowDialog()
+            LoadDialog(Path, "update")
 
             LoadComposerJson()
         End If
@@ -54,8 +45,8 @@ Public Class FormMain
         End If
 
         Dim requireListSorted = requireList _
-            .OrderBy(Function(x) Not x.IsDev) _
-            .ThenByDescending(Function(x) x.Package) _
+            .OrderBy(Function(x) x.IsDev) _
+            .ThenBy(Function(x) x.Package) _
             .ToList()
 
         panelItems.Controls.Clear()
@@ -66,13 +57,15 @@ Public Class FormMain
                 .Package = item.Package,
                 .InstalledVersion = item.InstalledVersion,
                 .ConstraintVersion = item.ConstraintVersion,
-                .IsDev = item.IsDev
+                .IsDev = item.IsDev,
+                .Path = Path
             }
 
             AddHandler newPanel.DeleteRequested, AddressOf DeleteItem
             AddHandler newPanel.UpdateRequested, AddressOf UpdateItem
 
             panelItems.Controls.Add(newPanel)
+            panelItems.Controls.SetChildIndex(newPanel, 0)
         Next
 
         panelItems.Select()
@@ -108,12 +101,7 @@ Public Class FormMain
             command &= " --dev"
         End If
 
-        Dim d As New DialogProgressComposer With {
-            .Path = Path,
-            .Command = command
-        }
-
-        d.ShowDialog()
+        LoadDialog(Path, command)
     End Sub
 
     Private Sub DeleteItem(sender As ItemComposer)
@@ -123,12 +111,7 @@ Public Class FormMain
             command &= " --dev"
         End If
 
-        Dim d As New DialogProgressComposer With {
-            .Path = Path,
-            .Command = command
-        }
-
-        d.ShowDialog()
+        LoadDialog(Path, command)
 
         LoadComposerJson()
     End Sub
@@ -171,18 +154,13 @@ Public Class FormMain
         LoadComposerJson()
     End Sub
 
-    Private Sub btnUpdateAll_Click(sender As Object, e As EventArgs) Handles btnUpdateAll.Click
-        Dim d As New DialogProgressComposer With {
-            .Path = Path,
-            .Command = "update"
-        }
-
-        d.ShowDialog()
+    Private Sub BtnUpdateAll_Click(sender As Object, e As EventArgs) Handles btnUpdateAll.Click
+        LoadDialog(Path, "update")
 
         LoadComposerJson()
     End Sub
 
-    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles btnRefresh.Click
+    Private Sub BtnRefresh_Click(sender As Object, e As EventArgs) Handles btnRefresh.Click
         LoadComposerJson()
     End Sub
 

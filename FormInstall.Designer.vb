@@ -23,74 +23,64 @@ Partial Class FormInstall
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FormInstall))
-        gridPackages = New DataGridView()
-        Button1 = New Button()
+        btnSearch = New Button()
         txtSearch = New TextBox()
-        Button2 = New Button()
-        CType(gridPackages, ComponentModel.ISupportInitialize).BeginInit()
+        panelItems = New Panel()
         SuspendLayout()
         ' 
-        ' gridPackages
+        ' btnSearch
         ' 
-        gridPackages.AllowUserToAddRows = False
-        gridPackages.AllowUserToDeleteRows = False
-        gridPackages.Anchor = AnchorStyles.Top Or AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
-        gridPackages.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        gridPackages.Location = New Point(12, 47)
-        gridPackages.Name = "gridPackages"
-        gridPackages.ReadOnly = True
-        gridPackages.RowHeadersWidth = 51
-        gridPackages.Size = New Size(958, 394)
-        gridPackages.TabIndex = 0
-        ' 
-        ' Button1
-        ' 
-        Button1.Anchor = AnchorStyles.Top Or AnchorStyles.Right
-        Button1.Location = New Point(776, 12)
-        Button1.Name = "Button1"
-        Button1.Size = New Size(94, 29)
-        Button1.TabIndex = 1
-        Button1.Text = "Search"
-        Button1.UseVisualStyleBackColor = True
+        btnSearch.Anchor = AnchorStyles.Top Or AnchorStyles.Right
+        btnSearch.Font = New Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
+        btnSearch.Location = New Point(852, 11)
+        btnSearch.Margin = New Padding(3, 2, 3, 2)
+        btnSearch.Name = "btnSearch"
+        btnSearch.Size = New Size(120, 50)
+        btnSearch.TabIndex = 1
+        btnSearch.Text = "Search"
+        btnSearch.UseVisualStyleBackColor = True
         ' 
         ' txtSearch
         ' 
         txtSearch.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
-        txtSearch.Location = New Point(12, 12)
+        txtSearch.Font = New Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
+        txtSearch.Location = New Point(497, 26)
+        txtSearch.Margin = New Padding(3, 2, 3, 2)
         txtSearch.Name = "txtSearch"
-        txtSearch.Size = New Size(758, 27)
+        txtSearch.Size = New Size(349, 35)
         txtSearch.TabIndex = 2
         ' 
-        ' Button2
+        ' panelItems
         ' 
-        Button2.Anchor = AnchorStyles.Top Or AnchorStyles.Right
-        Button2.Location = New Point(876, 12)
-        Button2.Name = "Button2"
-        Button2.Size = New Size(94, 29)
-        Button2.TabIndex = 3
-        Button2.Text = "Install"
-        Button2.UseVisualStyleBackColor = True
+        panelItems.Anchor = AnchorStyles.Top Or AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
+        panelItems.AutoScroll = True
+        panelItems.BorderStyle = BorderStyle.FixedSingle
+        panelItems.Location = New Point(10, 65)
+        panelItems.Margin = New Padding(2)
+        panelItems.Name = "panelItems"
+        panelItems.Size = New Size(963, 385)
+        panelItems.TabIndex = 4
         ' 
         ' FormInstall
         ' 
-        AutoScaleDimensions = New SizeF(8F, 20F)
+        AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(982, 453)
-        Controls.Add(Button2)
+        ClientSize = New Size(984, 461)
+        Controls.Add(panelItems)
         Controls.Add(txtSearch)
-        Controls.Add(Button1)
-        Controls.Add(gridPackages)
+        Controls.Add(btnSearch)
         Icon = CType(resources.GetObject("$this.Icon"), Icon)
+        Margin = New Padding(3, 2, 3, 2)
+        MinimizeBox = False
+        MinimumSize = New Size(1000, 500)
         Name = "FormInstall"
+        ShowInTaskbar = False
         StartPosition = FormStartPosition.CenterParent
-        Text = "FormInstall"
-        CType(gridPackages, ComponentModel.ISupportInitialize).EndInit()
+        Text = "Composer Visual Manager - Install"
         ResumeLayout(False)
         PerformLayout()
     End Sub
-
-    Friend WithEvents gridPackages As DataGridView
-    Friend WithEvents Button1 As Button
+    Friend WithEvents btnSearch As Button
     Friend WithEvents txtSearch As TextBox
-    Friend WithEvents Button2 As Button
+    Friend WithEvents panelItems As Panel
 End Class

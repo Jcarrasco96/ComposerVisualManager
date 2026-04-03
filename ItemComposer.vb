@@ -1,14 +1,13 @@
-﻿Imports Newtonsoft.Json
-Imports NuGet.Versioning
+﻿Public Class ItemComposer
 
-Public Class ItemComposer
+    Public Event DeleteRequested(sender As ItemComposer)
+    Public Event UpdateRequested(sender As ItemComposer)
 
     Public Package As String
     Public InstalledVersion As String
     Public ConstraintVersion As String
     Public IsDev As Boolean = False
-
-
+    Public Path As String
 
     Private StatusColor As Color = Color.LightGray
 
@@ -21,18 +20,14 @@ Public Class ItemComposer
             AddHandler ctrl.MouseLeave, Sub() BackColor = SystemColors.Control
         Next
 
+        AddHandler MouseEnter, Sub() BackColor = StatusColor
+        AddHandler MouseLeave, Sub() BackColor = SystemColors.Control
+
         RefreshData()
     End Sub
 
-    Private Sub ItemComposer_MouseEnter(sender As Object, e As EventArgs) Handles Me.MouseEnter
-        BackColor = StatusColor
-    End Sub
-
-    Private Sub ItemComposer_MouseLeave(sender As Object, e As EventArgs) Handles Me.MouseLeave
-        BackColor = SystemColors.Control
-    End Sub
-
     Private Async Sub RefreshData()
+        lblInstalled.Text = "LOADING..."
         lblLatest.Text = "LOADING..."
         lblUpdated.Text = "LOADING..."
         lblLastUpdated.Text = "LOADING..."
@@ -41,8 +36,10 @@ Public Class ItemComposer
 
         If IsDev Then
             lblRequire.Text = "dev"
+            lblRequire.BackColor = Color.FromArgb(226, 227, 229)
         Else
             lblRequire.Text = "app"
+            lblRequire.BackColor = Color.FromArgb(207, 226, 255) ' primary cfe2ff
         End If
 
         Dim pd = Await PackageData.GetInfo(Package)
@@ -54,6 +51,7 @@ Public Class ItemComposer
 
         Dim latest = versions.First()
 
+        lblInstalled.Text = GetInstalledVersion($"{Path}\composer.lock", Package)
         lblLatest.Text = latest.VersionNormalized
         lblUpdated.Text = latest.GetUpdateType(InstalledVersion)
         'lblUpdated.Text = latest.GetRealUpdateType(InstalledVersion, ConstraintVersion)
@@ -65,7 +63,11 @@ Public Class ItemComposer
     End Sub
 
     Private Sub BtnRefresh_Click(sender As Object, e As EventArgs) Handles btnRefresh.Click
+        btnRefresh.Enabled = False
+
         RefreshData()
+
+        btnRefresh.Enabled = True
     End Sub
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
@@ -81,10 +83,7 @@ Public Class ItemComposer
     End Sub
 
     Private Sub LblPackage_Click(sender As Object, e As EventArgs) Handles lblPackage.Click
-        Dim psi As New ProcessStartInfo("https://packagist.org/packages/" & Package) With {
-            .UseShellExecute = True
-        }
-        Process.Start(psi)
+        OpenUrl("https://packagist.org/packages/" & Package)
     End Sub
 
     Private Sub LblPackage_MouseEnter(sender As Label, e As EventArgs) Handles lblPackage.MouseEnter
@@ -98,8 +97,5 @@ Public Class ItemComposer
         sender.Font = New Font(sender.Font, FontStyle.Regular)
         sender.Cursor = Cursors.Default
     End Sub
-
-    Public Event DeleteRequested(sender As ItemComposer)
-    Public Event UpdateRequested(sender As ItemComposer)
 
 End Class

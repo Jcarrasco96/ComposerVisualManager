@@ -1,6 +1,6 @@
 ﻿Imports System.IO
+Imports System.IO.Packaging
 Imports Newtonsoft.Json
-Imports NuGet.Versioning
 
 Module ModuleMain
 
@@ -75,5 +75,21 @@ Module ModuleMain
 
         Return Nothing
     End Function
+
+    Public Sub OpenUrl(link As String)
+        Dim psi As New ProcessStartInfo(link) With {
+            .UseShellExecute = True
+        }
+        Process.Start(psi)
+    End Sub
+
+    Public Sub LoadDialog(path As String, command As String)
+        Dim d As New DialogProgressComposer With {
+            .Path = path,
+            .Command = command
+        }
+
+        d.ShowDialog()
+    End Sub
 
 End Module

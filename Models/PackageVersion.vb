@@ -157,19 +157,19 @@ Public Class PackageVersion
                 Return Color.FromArgb(248, 215, 218) ' danger
                 Exit Select
 
-            Case "UP-TO-DATE"
+            Case "PATCH"
                 Return Color.FromArgb(209, 231, 221) ' success
                 Exit Select
 
-            Case "UNKNOWN"
+            Case "UP-TO-DATE"
                 Return Color.FromArgb(207, 244, 252) ' info
                 Exit Select
 
-            Case "MINOR"
+            Case "UNKNOWN"
                 Return Color.FromArgb(226, 227, 229) ' secondary
                 Exit Select
 
-            Case "PATCH"
+            Case "MINOR"
                 Return Color.FromArgb(255, 243, 205) ' warning
                 Exit Select
 

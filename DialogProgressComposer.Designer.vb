@@ -28,22 +28,24 @@ Partial Class DialogProgressComposer
         ' txtOutput
         ' 
         txtOutput.Anchor = AnchorStyles.Top Or AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
-        txtOutput.Location = New Point(12, 12)
+        txtOutput.BorderStyle = BorderStyle.FixedSingle
+        txtOutput.Location = New Point(10, 9)
+        txtOutput.Margin = New Padding(3, 2, 3, 2)
         txtOutput.Multiline = True
         txtOutput.Name = "txtOutput"
         txtOutput.ReadOnly = True
         txtOutput.ScrollBars = ScrollBars.Vertical
-        txtOutput.Size = New Size(933, 629)
+        txtOutput.Size = New Size(817, 473)
         txtOutput.TabIndex = 1
         ' 
         ' DialogProgressComposer
         ' 
-        AutoScaleDimensions = New SizeF(8F, 20F)
+        AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(957, 653)
+        ClientSize = New Size(837, 490)
         Controls.Add(txtOutput)
         FormBorderStyle = FormBorderStyle.FixedDialog
-        Margin = New Padding(4, 5, 4, 5)
+        Margin = New Padding(4, 4, 4, 4)
         MaximizeBox = False
         MinimizeBox = False
         Name = "DialogProgressComposer"

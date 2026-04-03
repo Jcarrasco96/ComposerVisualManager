@@ -5,14 +5,14 @@ Public Class PackageResult
     <JsonProperty(NameOf(Name))>
     Public Property Name As String
 
-    <JsonProperty(NameOf(description))>
-    Public Property description As String
+    <JsonProperty(NameOf(Description))>
+    Public Property Description As String
 
-    <JsonProperty(NameOf(url))>
-    Public Property url As String
+    <JsonProperty(NameOf(Url))>
+    Public Property Url As String
 
-    <JsonProperty(NameOf(repository))>
-    Public Property repository As String
+    <JsonProperty(NameOf(Repository))>
+    Public Property Repository As String
 
     <JsonProperty(NameOf(Downloads))>
     Public Property Downloads As Integer
