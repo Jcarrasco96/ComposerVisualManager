@@ -22,6 +22,7 @@ Partial Class ItemComposer
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        components = New ComponentModel.Container()
         btnDelete = New Button()
         lblPackage = New Label()
         lblInstalled = New Label()
@@ -30,7 +31,8 @@ Partial Class ItemComposer
         lblLatest = New Label()
         lblLastUpdated = New Label()
         btnRefresh = New Button()
-        Button1 = New Button()
+        btnUpdate = New Button()
+        tTip = New ToolTip(components)
         SuspendLayout()
         ' 
         ' btnDelete
@@ -42,6 +44,7 @@ Partial Class ItemComposer
         btnDelete.Name = "btnDelete"
         btnDelete.Size = New Size(50, 50)
         btnDelete.TabIndex = 3
+        tTip.SetToolTip(btnDelete, "Remove package")
         btnDelete.UseVisualStyleBackColor = True
         ' 
         ' lblPackage
@@ -55,6 +58,7 @@ Partial Class ItemComposer
         lblPackage.TabIndex = 2
         lblPackage.Text = "PACKAGE"
         lblPackage.TextAlign = ContentAlignment.MiddleLeft
+        tTip.SetToolTip(lblPackage, "Package name. You can clic to open package webpage on packagist.")
         ' 
         ' lblInstalled
         ' 
@@ -68,6 +72,7 @@ Partial Class ItemComposer
         lblInstalled.TabIndex = 4
         lblInstalled.Text = "INSTALLED"
         lblInstalled.TextAlign = ContentAlignment.MiddleCenter
+        tTip.SetToolTip(lblInstalled, "Installed version")
         ' 
         ' lblRequire
         ' 
@@ -80,6 +85,7 @@ Partial Class ItemComposer
         lblRequire.TabIndex = 5
         lblRequire.Text = "REQUIRED"
         lblRequire.TextAlign = ContentAlignment.MiddleCenter
+        tTip.SetToolTip(lblRequire, "Require type (app/dev)")
         ' 
         ' lblUpdated
         ' 
@@ -92,6 +98,7 @@ Partial Class ItemComposer
         lblUpdated.TabIndex = 7
         lblUpdated.Text = "UP-TO-DATE"
         lblUpdated.TextAlign = ContentAlignment.MiddleCenter
+        tTip.SetToolTip(lblUpdated, "Status")
         ' 
         ' lblLatest
         ' 
@@ -105,6 +112,7 @@ Partial Class ItemComposer
         lblLatest.TabIndex = 8
         lblLatest.Text = "LATEST"
         lblLatest.TextAlign = ContentAlignment.MiddleCenter
+        tTip.SetToolTip(lblLatest, "Latest version")
         ' 
         ' lblLastUpdated
         ' 
@@ -117,6 +125,7 @@ Partial Class ItemComposer
         lblLastUpdated.TabIndex = 9
         lblLastUpdated.Text = "LAST UPDATED"
         lblLastUpdated.TextAlign = ContentAlignment.MiddleCenter
+        tTip.SetToolTip(lblLastUpdated, "Last updated")
         ' 
         ' btnRefresh
         ' 
@@ -127,24 +136,26 @@ Partial Class ItemComposer
         btnRefresh.Name = "btnRefresh"
         btnRefresh.Size = New Size(50, 50)
         btnRefresh.TabIndex = 2
+        tTip.SetToolTip(btnRefresh, "Refresh data")
         btnRefresh.UseVisualStyleBackColor = True
         ' 
-        ' Button1
+        ' btnUpdate
         ' 
-        Button1.Anchor = AnchorStyles.Top Or AnchorStyles.Bottom Or AnchorStyles.Right
-        Button1.Image = My.Resources.Resources.cloud_computing
-        Button1.Location = New Point(740, 2)
-        Button1.Margin = New Padding(2)
-        Button1.Name = "Button1"
-        Button1.Size = New Size(50, 50)
-        Button1.TabIndex = 1
-        Button1.UseVisualStyleBackColor = True
+        btnUpdate.Anchor = AnchorStyles.Top Or AnchorStyles.Bottom Or AnchorStyles.Right
+        btnUpdate.Image = My.Resources.Resources.cloud_computing
+        btnUpdate.Location = New Point(740, 2)
+        btnUpdate.Margin = New Padding(2)
+        btnUpdate.Name = "btnUpdate"
+        btnUpdate.Size = New Size(50, 50)
+        btnUpdate.TabIndex = 1
+        tTip.SetToolTip(btnUpdate, "Update package")
+        btnUpdate.UseVisualStyleBackColor = True
         ' 
         ' ItemComposer
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        Controls.Add(Button1)
+        Controls.Add(btnUpdate)
         Controls.Add(btnRefresh)
         Controls.Add(lblLastUpdated)
         Controls.Add(lblLatest)
@@ -169,6 +180,7 @@ Partial Class ItemComposer
     Friend WithEvents lblLatest As Label
     Friend WithEvents lblLastUpdated As Label
     Friend WithEvents btnRefresh As Button
-    Friend WithEvents Button1 As Button
+    Friend WithEvents btnUpdate As Button
+    Friend WithEvents tTip As ToolTip
 
 End Class

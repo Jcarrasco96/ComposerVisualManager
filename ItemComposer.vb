@@ -1,19 +1,20 @@
 ﻿Public Class ItemComposer
 
-    Public Event DeleteRequested(sender As ItemComposer)
-    Public Event UpdateRequested(sender As ItemComposer)
+    Public Event DeleteRequested(package As String, isDev As Boolean)
+    Public Event UpdateRequested(package As String, isDev As Boolean, forceUpdate As Boolean, latestVersion As String)
 
-    Public Package As String
-    Public InstalledVersion As String
-    Public ConstraintVersion As String
-    Public IsDev As Boolean = False
-    Public Path As String
+    Private Package As String = Nothing
+    Private IsDev As Boolean = False
+    Private Path As String = Nothing
+
+    Private LatastVersion As String = Nothing
 
     Private StatusColor As Color = Color.LightGray
 
-    Private Sub ItemComposer_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        lblPackage.Text = Package
-        lblInstalled.Text = InstalledVersion
+    Public Sub New(package As String, constraintVersion As String, isDev As Boolean, path As String)
+        InitializeComponent()
+
+        Dock = DockStyle.Top
 
         For Each ctrl As Control In Controls
             AddHandler ctrl.MouseEnter, Sub() BackColor = StatusColor
@@ -23,16 +24,18 @@
         AddHandler MouseEnter, Sub() BackColor = StatusColor
         AddHandler MouseLeave, Sub() BackColor = SystemColors.Control
 
-        RefreshData()
+        Me.Package = package
+        Me.IsDev = isDev
+        Me.Path = path
+
+        lblPackage.Text = package & " (" & constraintVersion & ")"
     End Sub
 
-    Private Async Sub RefreshData()
+    Public Async Function RefreshData() As Task
         lblInstalled.Text = "LOADING..."
         lblLatest.Text = "LOADING..."
         lblUpdated.Text = "LOADING..."
         lblLastUpdated.Text = "LOADING..."
-
-        lblPackage.Text = Package & " (" & ConstraintVersion & ")"
 
         If IsDev Then
             lblRequire.Text = "dev"
@@ -42,43 +45,64 @@
             lblRequire.BackColor = Color.FromArgb(207, 226, 255) ' primary cfe2ff
         End If
 
-        Dim pd = Await PackageData.GetInfo(Package)
+        Dim pd As PackageData = Await PackageData.GetInfo(Package)
 
-        Dim pFirst = pd.Packages.First
+        Dim installedVersion As String = GetInstalledVersion($"{Path}\composer.lock", Package)
+
+        lblInstalled.Text = installedVersion
+
+        Dim pFirst As KeyValuePair(Of String, List(Of PackageVersion)) = pd.Packages.First
 
         'Dim name As String = pFirst.Key
-        Dim versions = pFirst.Value
+        Dim versions As List(Of PackageVersion) = pFirst.Value
 
-        Dim latest = versions.First()
+        If versions.Count = 0 Then
+            lblLatest.Text = "NO INFO"
+            lblUpdated.Text = "NO INFO"
+            lblLastUpdated.Text = "NO INFO"
+            Exit Function
+        End If
 
-        lblInstalled.Text = GetInstalledVersion($"{Path}\composer.lock", Package)
+        Dim latest As PackageVersion = versions.First()
+
+        LatastVersion = latest.VersionNormalized
+
         lblLatest.Text = latest.VersionNormalized
-        lblUpdated.Text = latest.GetUpdateType(InstalledVersion)
+        lblUpdated.Text = latest.GetUpdateType(installedVersion)
         'lblUpdated.Text = latest.GetRealUpdateType(InstalledVersion, ConstraintVersion)
         lblLastUpdated.Text = latest.LastUpdated
 
-        StatusColor = latest.Color(InstalledVersion)
+        StatusColor = latest.Color(installedVersion)
 
         lblUpdated.BackColor = StatusColor
-    End Sub
 
-    Private Sub BtnRefresh_Click(sender As Object, e As EventArgs) Handles btnRefresh.Click
+        If latest.GetUpdateType(installedVersion) = "UP-TO-DATE" Then
+            btnUpdate.Enabled = False
+        End If
+    End Function
+
+    Private Async Sub BtnRefresh_Click(sender As Object, e As EventArgs) Handles btnRefresh.Click
         btnRefresh.Enabled = False
 
-        RefreshData()
+        Await RefreshData()
 
         btnRefresh.Enabled = True
+        btnRefresh.Focus()
     End Sub
 
-    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
-        RaiseEvent UpdateRequested(Me)
+    Private Async Sub BbnUpdate_Click(sender As Object, e As EventArgs) Handles btnUpdate.Click
+        Dim isForce As Boolean = (ModifierKeys And Keys.Shift) = Keys.Shift
+
+        RaiseEvent UpdateRequested(Package, IsDev, isForce, LatastVersion)
+
+        Await RefreshData()
     End Sub
 
     Private Sub BtnDelete_Click(sender As Object, e As EventArgs) Handles btnDelete.Click
-        Dim result = MsgBox("Are you sure you want to remove the extension `" & Package & "`?", MsgBoxStyle.YesNo + MsgBoxStyle.Question)
+        Dim result As MsgBoxResult = MsgBox("Are you sure you want to remove the extension `" & Package & "`?", CType(MsgBoxStyle.YesNo + MsgBoxStyle.Question, MsgBoxStyle))
 
         If result = MsgBoxResult.Yes Then
-            RaiseEvent DeleteRequested(Me)
+            RaiseEvent DeleteRequested(Package, IsDev)
         End If
     End Sub
 
@@ -86,16 +110,23 @@
         OpenUrl("https://packagist.org/packages/" & Package)
     End Sub
 
-    Private Sub LblPackage_MouseEnter(sender As Label, e As EventArgs) Handles lblPackage.MouseEnter
-        sender.ForeColor = Color.Blue
-        sender.Font = New Font(sender.Font, FontStyle.Underline)
-        sender.Cursor = Cursors.Hand
+    Private Sub LblPackage_MouseEnter(sender As Object, e As EventArgs) Handles lblPackage.MouseEnter
+        If TypeOf sender Is Label Then
+            Dim lbl As Label = DirectCast(sender, Label)
+
+            lbl.ForeColor = Color.Blue
+            lbl.Font = New Font(lbl.Font, FontStyle.Underline)
+            lbl.Cursor = Cursors.Hand
+        End If
     End Sub
 
-    Private Sub LblPackage_MouseLeave(sender As Label, e As EventArgs) Handles lblPackage.MouseLeave
-        sender.ForeColor = SystemColors.ControlText
-        sender.Font = New Font(sender.Font, FontStyle.Regular)
-        sender.Cursor = Cursors.Default
+    Private Sub LblPackage_MouseLeave(sender As Object, e As EventArgs) Handles lblPackage.MouseLeave
+        If TypeOf sender Is Label Then
+            Dim lbl As Label = DirectCast(sender, Label)
+            lbl.ForeColor = SystemColors.ControlText
+            lbl.Font = New Font(lbl.Font, FontStyle.Regular)
+            lbl.Cursor = Cursors.Default
+        End If
     End Sub
 
 End Class

@@ -1,7 +1,14 @@
 ﻿Public Class FormInstall
 
-    Public Path As String
+    Private Path As String
     Private LockData As ComposerLock
+
+    Public Sub New(path As String)
+        InitializeComponent()
+
+        Me.Path = path
+        LockData = GetLockData($"{path}\composer.lock")
+    End Sub
 
     Private Sub BtnSearch_Click(sender As Object, e As EventArgs) Handles btnSearch.Click
         SearchPackages()
@@ -9,18 +16,16 @@
 
     Private Async Sub SearchPackages()
         btnSearch.Enabled = False
-
-        Dim result = Await PackagistResponse.SearchPackages(txtSearch.Text)
+        txtSearch.Enabled = False
 
         panelItems.Controls.Clear()
+        panelItems.Visible = False
+
+        Dim result As PackagistResponse = Await PackagistResponse.SearchPackages(txtSearch.Text)
 
         If result.Results IsNot Nothing Then
             For Each item As PackageResult In result.Results
-                Dim newPanel As New ItemPackage With {
-                    .Dock = DockStyle.Top,
-                    .Package = item,
-                    .LockData = LockData
-                }
+                Dim newPanel As New ItemPackage(item, IsInstalled(item.Name))
 
                 AddHandler newPanel.InstallRequested, AddressOf InstallItem
 
@@ -29,9 +34,11 @@
             Next
         End If
 
+        panelItems.Visible = True
         panelItems.Select()
 
         btnSearch.Enabled = True
+        txtSearch.Enabled = True
     End Sub
 
     Private Sub InstallItem(package As String)
@@ -41,17 +48,13 @@
             Exit Sub
         End If
 
-        Dim command = $"require {package}"
+        Dim command As String = $"require {package}"
 
         If installDev = DialogResult.Yes Then
             command &= " --dev"
         End If
 
-        LoadDialog(Path, command)
-    End Sub
-
-    Private Sub FormInstall_Load(sender As Object, e As EventArgs) Handles Me.Load
-        LockData = GetLockData($"{Path}\composer.lock")
+        DialogProgressComposer.Show(Path, command)
     End Sub
 
     Private Sub TxtSearch_KeyDown(sender As Object, e As KeyEventArgs) Handles txtSearch.KeyDown
@@ -60,5 +63,21 @@
             e.SuppressKeyPress = True
         End If
     End Sub
+
+    Public Function IsInstalled(packageName As String) As Boolean
+        If LockData Is Nothing Then
+            Return False
+        End If
+
+        If LockData.Packages.Any(Function(p) p.Name = packageName) Then
+            Return True
+        End If
+
+        If LockData.PackagesDev.Any(Function(p) p.Name = packageName) Then
+            Return True
+        End If
+
+        Return False
+    End Function
 
 End Class

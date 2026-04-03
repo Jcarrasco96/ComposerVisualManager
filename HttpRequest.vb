@@ -47,8 +47,8 @@ Public Class HttpRequest
         Dim requestMessage As New HttpRequestMessage(New HttpMethod(method), url)
 
         If headers IsNot Nothing Then
-            For Each kvp In headers
-                Dim headerName = kvp.Key.ToLowerInvariant()
+            For Each kvp As KeyValuePair(Of String, String) In headers
+                Dim headerName As String = kvp.Key.ToLowerInvariant()
 
                 If headerName = "transfer-encoding" Or headerName = "content-length" Or headerName = "host" Then
                     Continue For
@@ -79,12 +79,12 @@ Public Class HttpRequest
                 .Body = response.Content.ReadAsByteArrayAsync().Result
             }
 
-            For Each h In response.Headers
+            For Each h As KeyValuePair(Of String, IEnumerable(Of String)) In response.Headers
                 Dim headerValue As String = String.Join(";", h.Value)
 
                 result.Headers(h.Key) = headerValue
             Next
-            For Each h In response.Content.Headers
+            For Each h As KeyValuePair(Of String, IEnumerable(Of String)) In response.Content.Headers
                 Dim headerValue As String = String.Join(";", h.Value)
 
                 result.Headers(h.Key) = headerValue
@@ -121,8 +121,8 @@ Public Class HttpRequest
         Dim requestMessage As New HttpRequestMessage(New HttpMethod(method), url)
 
         If headers IsNot Nothing Then
-            For Each kvp In headers
-                Dim headerName = kvp.Key.ToLowerInvariant()
+            For Each kvp As KeyValuePair(Of String, String) In headers
+                Dim headerName As String = kvp.Key.ToLowerInvariant()
 
                 If headerName = "transfer-encoding" Or headerName = "content-length" Or headerName = "host" Then
                     Continue For
@@ -152,10 +152,10 @@ Public Class HttpRequest
                 .Body = If(returnAsByteArray, Await response.Content.ReadAsByteArrayAsync(), Encoding.UTF8.GetBytes(Await response.Content.ReadAsStringAsync()))
             }
 
-            For Each h In response.Headers
+            For Each h As KeyValuePair(Of String, IEnumerable(Of String)) In response.Headers
                 result.Headers(h.Key) = String.Join(";", h.Value)
             Next
-            For Each h In response.Content.Headers
+            For Each h As KeyValuePair(Of String, IEnumerable(Of String)) In response.Content.Headers
                 result.Headers(h.Key) = String.Join(";", h.Value)
             Next
 

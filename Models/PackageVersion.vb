@@ -77,9 +77,9 @@ Public Class PackageVersion
                 canUpdate = True
             Else
                 If constraint.EndsWith(".*") Then
-                    Dim majorMinor = constraint.Replace(".*", "").Split("."c)
-                    Dim major = Integer.Parse(majorMinor(0))
-                    Dim minor = Integer.Parse(majorMinor(1))
+                    Dim majorMinor As String() = constraint.Replace(".*", "").Split("."c)
+                    Dim major As Integer = Integer.Parse(majorMinor(0))
+                    Dim minor As Integer = Integer.Parse(majorMinor(1))
                     canUpdate = (vLatest.Major = major AndAlso vLatest.Minor = minor)
                 Else
                     canUpdate = CumpleConstraint(installed, constraint, VersionNormalized)
@@ -111,17 +111,17 @@ Public Class PackageVersion
     Public Shared Function CumpleConstraint(installedVersion As String, constraint As String, Optional latestVersion As String = Nothing) As Boolean
         Dim rangos() As String = constraint.Split({"||"}, StringSplitOptions.RemoveEmptyEntries)
 
-        For Each r In rangos
-            Dim rangoTrim = r.Trim()
+        For Each r As String In rangos
+            Dim rangoTrim As String = r.Trim()
 
             If rangoTrim = installedVersion Then
                 Return True
             End If
 
-            Dim match = Regex.Match(rangoTrim, "(>=|<=|>|<)\s*([\d\.]+)")
+            Dim match As Match = Regex.Match(rangoTrim, "(>=|<=|>|<)\s*([\d\.]+)")
             If match.Success Then
-                Dim op = match.Groups(1).Value
-                Dim ver = match.Groups(2).Value
+                Dim op As String = match.Groups(1).Value
+                Dim ver As String = match.Groups(2).Value
 
                 Dim vInst As Version
                 Dim vReq As Version
@@ -150,7 +150,7 @@ Public Class PackageVersion
     End Function
 
     Public Function Color(installed As String) As Color
-        Dim updateType = GetUpdateType(installed)
+        Dim updateType As String = GetUpdateType(installed)
 
         Select Case updateType
             Case "MAJOR"

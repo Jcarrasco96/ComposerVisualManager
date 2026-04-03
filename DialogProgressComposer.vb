@@ -1,12 +1,17 @@
 ﻿Public Class DialogProgressComposer
 
-    Public Path As String
-    Public Command As String
+    'Public Path As String
+    'Public Command As String
 
-    Private Sub Dialog1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        Text = $"composer {Command} --no-scripts"
+    Public Sub New(path As String, command As String)
+        InitializeComponent()
 
-        EjecutarComposer()
+        'Me.Path = path
+        'Me.Command = command
+
+        Text = $"composer {command} --no-progress --no-scripts"
+
+        EjecutarComposer(path, command)
     End Sub
 
     Private Sub AppendTextSafe(text As String)
@@ -17,18 +22,18 @@
         End If
     End Sub
 
-    Private Async Sub EjecutarComposer()
+    Private Async Sub EjecutarComposer(path As String, command As String)
         txtOutput.Clear()
         ControlBox = False
 
         Dim psi As New ProcessStartInfo With {
             .FileName = "cmd.exe",
-            .Arguments = $"/c composer {Command} --no-scripts 2>&1",
+            .Arguments = $"/c composer {command} --no-progress --no-scripts 2>&1",
             .RedirectStandardOutput = True,
             .RedirectStandardError = True,
             .UseShellExecute = False,
             .CreateNoWindow = True,
-            .WorkingDirectory = Path
+            .WorkingDirectory = path
         }
 
         Dim proc As New Process With {
@@ -46,8 +51,6 @@
         AppendTextSafe("----- EOF -----")
 
         ControlBox = True
-
-        'Close()
     End Sub
 
     Private Sub WriteOutput(sender As Object, e As DataReceivedEventArgs)
@@ -64,5 +67,12 @@
 
         AppendTextSafe(e.Data)
     End Sub
+
+    Public Overloads Shared Sub Show(path As String, command As String)
+        Dim d As New DialogProgressComposer(path, command)
+
+        d.ShowDialog()
+    End Sub
+
 
 End Class

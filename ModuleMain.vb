@@ -1,5 +1,5 @@
 ﻿Imports System.IO
-Imports System.IO.Packaging
+Imports System.Reflection.Emit
 Imports Newtonsoft.Json
 
 Module ModuleMain
@@ -29,25 +29,25 @@ Module ModuleMain
     End Function
 
     Public Function IsInstalled(fileLock As String, packageName As String) As Boolean
-        Dim LockData = GetLockData(fileLock)
+        Dim LockData As ComposerLock = GetLockData(fileLock)
 
-        If lockData Is Nothing Then
+        If LockData Is Nothing Then
             Return False
         End If
 
-        Return lockData.Packages.Any(Function(p) p.Name = packageName)
+        Return LockData.Packages.Any(Function(p) p.Name = packageName)
     End Function
 
     Public Function GetInstalledPackages(fileLock As String) As Dictionary(Of String, String)
         Dim result As New Dictionary(Of String, String)
 
-        Dim LockData = GetLockData(fileLock)
+        Dim LockData As ComposerLock = GetLockData(fileLock)
 
-        If lockData Is Nothing Then
+        If LockData Is Nothing Then
             Return result
         End If
 
-        For Each pkg In lockData.Packages
+        For Each pkg As LockPackage In LockData.Packages
             result(pkg.Name) = pkg.Version
         Next
 
@@ -55,13 +55,13 @@ Module ModuleMain
     End Function
 
     Public Function GetInstalledVersion(fileLock As String, packageName As String) As String
-        Dim LockData = GetLockData(fileLock)
+        Dim LockData As ComposerLock = GetLockData(fileLock)
 
         If LockData Is Nothing Then
             Return Nothing
         End If
 
-        Dim pkg = LockData.Packages.FirstOrDefault(Function(p) p.Name = packageName)
+        Dim pkg As LockPackage = LockData.Packages.FirstOrDefault(Function(p) p.Name = packageName)
 
         If pkg IsNot Nothing Then
             Return pkg.Version.TrimStart("v"c)
@@ -81,15 +81,6 @@ Module ModuleMain
             .UseShellExecute = True
         }
         Process.Start(psi)
-    End Sub
-
-    Public Sub LoadDialog(path As String, command As String)
-        Dim d As New DialogProgressComposer With {
-            .Path = path,
-            .Command = command
-        }
-
-        d.ShowDialog()
     End Sub
 
 End Module

@@ -35,17 +35,17 @@ Partial Class DialogProgressComposer
         txtOutput.Name = "txtOutput"
         txtOutput.ReadOnly = True
         txtOutput.ScrollBars = ScrollBars.Vertical
-        txtOutput.Size = New Size(817, 473)
+        txtOutput.Size = New Size(784, 524)
         txtOutput.TabIndex = 1
         ' 
         ' DialogProgressComposer
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(837, 490)
+        ClientSize = New Size(804, 541)
         Controls.Add(txtOutput)
         FormBorderStyle = FormBorderStyle.FixedDialog
-        Margin = New Padding(4, 4, 4, 4)
+        Margin = New Padding(4)
         MaximizeBox = False
         MinimizeBox = False
         Name = "DialogProgressComposer"

@@ -5,9 +5,17 @@ Public Class FormMain
 
     ' TODO composer config allow-plugins.* true
 
-    Private Path As String ' = "D:\Programming\WEB\micro-framework"
+    Private Path As String ' = "C:\DEVELOP\PROGRAMMING\WEB\SISTEMAS_TCM\your_project"
 
-    Private Sub LoadComposerJson()
+    Private Async Sub LoadComposerJson()
+        panelItems.Controls.Clear()
+
+        btnRefresh.Enabled = False
+        btnUpdateAll.Enabled = False
+        btnSearch.Enabled = False
+
+        tssStatus.Text = $"Loading: {Path}"
+
         If Not File.Exists($"{Path}\composer.json") Then
             MessageBox.Show("composer.json not found.")
             Path = Nothing
@@ -15,14 +23,14 @@ Public Class FormMain
             Exit Sub
         End If
 
-        Dim lockData = GetLockData($"{Path}\composer.lock")
+        Dim lockData As ComposerLock = GetLockData($"{Path}\composer.lock")
 
         If lockData Is Nothing Then
             If MessageBox.Show("There is no lock file. Doy you want run `composer update` to generate a lock file?", "", MessageBoxButtons.YesNo) = DialogResult.No Then
                 Exit Sub
             End If
 
-            LoadDialog(Path, "update")
+            DialogProgressComposer.Show(Path, "update")
 
             LoadComposerJson()
         End If
@@ -32,43 +40,47 @@ Public Class FormMain
         Dim jsonText As String = File.ReadAllText($"{Path}\composer.json")
         Dim json As JObject = JObject.Parse(jsonText)
 
-        Dim require = json.SelectToken("require")
+        Dim require As JToken = json.SelectToken("require")
 
         If require IsNot Nothing Then
             AddRows(requireList, require)
         End If
 
-        Dim requireDev = json.SelectToken("require-dev")
+        Dim requireDev As JToken = json.SelectToken("require-dev")
 
         If requireDev IsNot Nothing Then
             AddRows(requireList, requireDev, True)
         End If
 
-        Dim requireListSorted = requireList _
+        Dim requireListSorted As List(Of RequireComposerItem) = requireList _
             .OrderBy(Function(x) x.IsDev) _
             .ThenBy(Function(x) x.Package) _
             .ToList()
 
-        panelItems.Controls.Clear()
+        panelItems.Visible = False
 
         For Each item As RequireComposerItem In requireListSorted
-            Dim newPanel As New ItemComposer With {
-                .Dock = DockStyle.Top,
-                .Package = item.Package,
-                .InstalledVersion = item.InstalledVersion,
-                .ConstraintVersion = item.ConstraintVersion,
-                .IsDev = item.IsDev,
-                .Path = Path
-            }
+            Dim newPanel As New ItemComposer(item.Package, item.ConstraintVersion, item.IsDev, Path)
+
+            Await newPanel.RefreshData()
 
             AddHandler newPanel.DeleteRequested, AddressOf DeleteItem
             AddHandler newPanel.UpdateRequested, AddressOf UpdateItem
 
             panelItems.Controls.Add(newPanel)
             panelItems.Controls.SetChildIndex(newPanel, 0)
+
+            tssStatus.Text = $"Adding package `{item.Package}`."
         Next
 
+        panelItems.Visible = True
         panelItems.Select()
+
+        btnRefresh.Enabled = True
+        btnUpdateAll.Enabled = True
+        btnSearch.Enabled = True
+
+        tssStatus.Text = $"Working on: {Path}"
     End Sub
 
     Private Sub AddRows(ByRef array As List(Of RequireComposerItem), require As JToken, Optional isDev As Boolean = False)
@@ -81,37 +93,36 @@ Public Class FormMain
 
             item = New RequireComposerItem With {
                 .Package = prop.Name,
-                .InstalledVersion = GetInstalledVersion($"{Path}\composer.lock", prop.Name),
                 .ConstraintVersion = prop.Value.ToString(),
                 .IsDev = isDev
             }
 
             array.Add(item)
-
-            tssStatus.Text = $"Adding: {prop.Name}"
         Next
-
-        tssStatus.Text = $"Working on: {Path}"
     End Sub
 
-    Private Sub UpdateItem(sender As ItemComposer)
-        Dim command As String = $"update {sender.Package}"
+    Private Sub UpdateItem(package As String, isDev As Boolean, forceUpdate As Boolean, latestVersion As String)
+        Dim command As String = $"update {package} -W"
 
-        If sender.IsDev Then
+        If forceUpdate Then
+            command = $"require {package}:{latestVersion} -W"
+        End If
+
+        If isDev Then
             command &= " --dev"
         End If
 
-        LoadDialog(Path, command)
+        DialogProgressComposer.Show(Path, command)
     End Sub
 
-    Private Sub DeleteItem(sender As ItemComposer)
-        Dim command As String = $"remove {sender.Package}"
+    Private Sub DeleteItem(package As String, isDev As Boolean)
+        Dim command As String = $"remove {package}"
 
-        If sender.IsDev Then
+        If isDev Then
             command &= " --dev"
         End If
 
-        LoadDialog(Path, command)
+        DialogProgressComposer.Show(Path, command)
 
         LoadComposerJson()
     End Sub
@@ -130,11 +141,10 @@ Public Class FormMain
         If rutas.All(Function(r) Directory.Exists(r)) Then
             Path = rutas.First
 
-            tssStatus.Text = $"Working on: {Path}"
-
             LoadComposerJson()
         Else
-            tssStatus.Text = "Only folders are allowed."
+            Path = Nothing
+            tssStatus.Text = "No path selected."
             MessageBox.Show("Only folders are allowed.")
         End If
     End Sub
@@ -145,9 +155,7 @@ Public Class FormMain
             Exit Sub
         End If
 
-        Dim formInstall As New FormInstall With {
-            .Path = Path
-        }
+        Dim formInstall As New FormInstall(Path)
 
         formInstall.ShowDialog()
 
@@ -155,13 +163,19 @@ Public Class FormMain
     End Sub
 
     Private Sub BtnUpdateAll_Click(sender As Object, e As EventArgs) Handles btnUpdateAll.Click
-        LoadDialog(Path, "update")
+        DialogProgressComposer.Show(Path, "update")
 
         LoadComposerJson()
     End Sub
 
     Private Sub BtnRefresh_Click(sender As Object, e As EventArgs) Handles btnRefresh.Click
         LoadComposerJson()
+    End Sub
+
+    Private Sub FormMain_Load(sender As Object, e As EventArgs) Handles Me.Load
+        If Path IsNot Nothing Then ' used in debug
+            LoadComposerJson()
+        End If
     End Sub
 
 End Class

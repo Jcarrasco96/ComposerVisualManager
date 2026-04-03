@@ -40,7 +40,7 @@ Partial Class FormMain
         panelItems.Location = New Point(10, 65)
         panelItems.Margin = New Padding(2)
         panelItems.Name = "panelItems"
-        panelItems.Size = New Size(1103, 392)
+        panelItems.Size = New Size(1103, 672)
         panelItems.TabIndex = 0
         ' 
         ' btnSearch
@@ -58,7 +58,7 @@ Partial Class FormMain
         ' 
         StatusStrip1.ImageScalingSize = New Size(20, 20)
         StatusStrip1.Items.AddRange(New ToolStripItem() {tssStatus})
-        StatusStrip1.Location = New Point(0, 459)
+        StatusStrip1.Location = New Point(0, 739)
         StatusStrip1.Name = "StatusStrip1"
         StatusStrip1.Padding = New Padding(1, 0, 12, 0)
         StatusStrip1.Size = New Size(1124, 22)
@@ -99,14 +99,14 @@ Partial Class FormMain
         AllowDrop = True
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(1124, 481)
+        ClientSize = New Size(1124, 761)
         Controls.Add(btnRefresh)
         Controls.Add(btnUpdateAll)
         Controls.Add(StatusStrip1)
         Controls.Add(btnSearch)
         Controls.Add(panelItems)
         Icon = CType(resources.GetObject("$this.Icon"), Icon)
-        MinimumSize = New Size(1140, 520)
+        MinimumSize = New Size(1140, 800)
         Name = "FormMain"
         StartPosition = FormStartPosition.CenterScreen
         Text = "Composer Visual Manager"

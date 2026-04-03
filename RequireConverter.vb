@@ -9,7 +9,7 @@ Public Class RequireConverter
 
     Public Overrides Function ReadJson(reader As JsonReader, objectType As Type, existingValue As Object, serializer As JsonSerializer) As Object
         If reader.TokenType = JsonToken.String Then
-            Dim stringValue = reader.Value?.ToString()
+            Dim stringValue As String = reader.Value?.ToString()
             If stringValue = "__unset" Then
                 Return New Dictionary(Of String, String)()
             End If

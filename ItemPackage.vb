@@ -2,14 +2,23 @@
 
     Public Event InstallRequested(package As String)
 
-    Public Package As PackageResult
-    Public LockData As ComposerLock
+    Private PackageName As String = Nothing
 
-    Private Sub ItemPackage_Load(sender As Object, e As EventArgs) Handles Me.Load
-        lblPackage.Text = Package.Name
-        lblDescription.Text = Package.Description
-        lblDownloads.Text = Package.Downloads
-        lblStars.Text = Package.Favers
+    Public Sub New(packageResult As PackageResult, isInstalled As Boolean)
+        InitializeComponent()
+
+        Dock = DockStyle.Top
+
+        PackageName = packageResult.Name
+
+        lblPackage.Text = packageResult.Name
+        lblDescription.Text = packageResult.Description
+        lblDownloads.Text = packageResult.Downloads.ToString
+        lblStars.Text = packageResult.Favers.ToString
+
+        If isInstalled Then
+            lblPackage.Text = packageResult.Name & " (INSTALLED)"
+        End If
 
         For Each ctrl As Control In Controls
             AddHandler ctrl.MouseEnter, Sub() BackColor = Color.DarkGray
@@ -18,46 +27,33 @@
 
         AddHandler MouseEnter, Sub() BackColor = Color.DarkGray
         AddHandler MouseLeave, Sub() BackColor = SystemColors.Control
-
-        If IsInstalled(Package.Name) Then
-            lblPackage.Text = Package.Name & " (INSTALLED)"
-        End If
     End Sub
 
     Private Sub BtnDownload_Click(sender As Object, e As EventArgs) Handles btnDownload.Click
-        RaiseEvent InstallRequested(Package.Name)
+        RaiseEvent InstallRequested(PackageName)
     End Sub
 
     Private Sub LblPackage_Click(sender As Object, e As EventArgs) Handles lblPackage.Click
-        OpenUrl("https://packagist.org/packages/" & Package.Name)
+        OpenUrl("https://packagist.org/packages/" & PackageName)
     End Sub
 
-    Private Sub LblPackage_MouseEnter(sender As Label, e As EventArgs) Handles lblPackage.MouseEnter
-        sender.ForeColor = Color.Blue
-        sender.Font = New Font(sender.Font, FontStyle.Underline)
-        sender.Cursor = Cursors.Hand
+    Private Sub LblPackage_MouseEnter(sender As Object, e As EventArgs) Handles lblPackage.MouseEnter
+        If TypeOf sender Is Label Then
+            Dim lbl As Label = DirectCast(sender, Label)
+
+            lbl.ForeColor = Color.Blue
+            lbl.Font = New Font(lbl.Font, FontStyle.Underline)
+            lbl.Cursor = Cursors.Hand
+        End If
     End Sub
 
-    Private Sub LblPackage_MouseLeave(sender As Label, e As EventArgs) Handles lblPackage.MouseLeave
-        sender.ForeColor = SystemColors.ControlText
-        sender.Font = New Font(sender.Font, FontStyle.Regular)
-        sender.Cursor = Cursors.Default
+    Private Sub LblPackage_MouseLeave(sender As Object, e As EventArgs) Handles lblPackage.MouseLeave
+        If TypeOf sender Is Label Then
+            Dim lbl As Label = DirectCast(sender, Label)
+            lbl.ForeColor = SystemColors.ControlText
+            lbl.Font = New Font(lbl.Font, FontStyle.Regular)
+            lbl.Cursor = Cursors.Default
+        End If
     End Sub
-
-    Public Function IsInstalled(packageName As String) As Boolean
-        If LockData Is Nothing Then
-            Return False
-        End If
-
-        If LockData.Packages.Any(Function(p) p.Name = packageName) Then
-            Return True
-        End If
-
-        If LockData.PackagesDev.Any(Function(p) p.Name = packageName) Then
-            Return True
-        End If
-
-        Return False
-    End Function
 
 End Class

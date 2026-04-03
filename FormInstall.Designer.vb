@@ -32,7 +32,7 @@ Partial Class FormInstall
         ' 
         btnSearch.Anchor = AnchorStyles.Top Or AnchorStyles.Right
         btnSearch.Font = New Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
-        btnSearch.Location = New Point(852, 11)
+        btnSearch.Location = New Point(821, 11)
         btnSearch.Margin = New Padding(3, 2, 3, 2)
         btnSearch.Name = "btnSearch"
         btnSearch.Size = New Size(120, 50)
@@ -47,7 +47,7 @@ Partial Class FormInstall
         txtSearch.Location = New Point(497, 26)
         txtSearch.Margin = New Padding(3, 2, 3, 2)
         txtSearch.Name = "txtSearch"
-        txtSearch.Size = New Size(349, 35)
+        txtSearch.Size = New Size(318, 35)
         txtSearch.TabIndex = 2
         ' 
         ' panelItems
@@ -58,21 +58,21 @@ Partial Class FormInstall
         panelItems.Location = New Point(10, 65)
         panelItems.Margin = New Padding(2)
         panelItems.Name = "panelItems"
-        panelItems.Size = New Size(963, 385)
+        panelItems.Size = New Size(932, 565)
         panelItems.TabIndex = 4
         ' 
         ' FormInstall
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(984, 461)
+        ClientSize = New Size(953, 641)
         Controls.Add(panelItems)
         Controls.Add(txtSearch)
         Controls.Add(btnSearch)
         Icon = CType(resources.GetObject("$this.Icon"), Icon)
         Margin = New Padding(3, 2, 3, 2)
         MinimizeBox = False
-        MinimumSize = New Size(1000, 500)
+        MinimumSize = New Size(969, 680)
         Name = "FormInstall"
         ShowInTaskbar = False
         StartPosition = FormStartPosition.CenterParent
