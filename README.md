@@ -25,3 +25,5 @@ TODO
 TODO
 
 ## 🪤 Pull requests are welcome
+
+![Alt](https://repobeats.axiom.co/api/embed/1f61002e3ab7814250d0c164bbb426342fcd8d62.svg "Repobeats analytics image")
